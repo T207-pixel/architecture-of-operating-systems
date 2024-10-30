@@ -1,4 +1,6 @@
 a.out
+*.swp
+dir*
 f
 l1.1
 tmp

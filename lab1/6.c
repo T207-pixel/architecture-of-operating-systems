@@ -26,7 +26,7 @@ long permissions(int permission) {
 }
 
 void myWrite(int fd) {
-    char arr[100];
+    char arr[1000000];
     printf("Write data in file\n");
     scanf("%s", arr);
     write(fd, arr, strlen(arr));
@@ -82,7 +82,7 @@ void creatGapFile(int fd) {
     myWrite(fd);
     
     // printf("Enter gap size: ");
-    long long gapSize = 100000;
+    long long gapSize = 10000000; //10M
     // scanf("%d", &gapSize);
 
     long long res = lseek(fd, gapSize, SEEK_CUR);

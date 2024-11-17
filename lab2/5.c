@@ -37,8 +37,8 @@ int main() {
         printf("Parent\n\n");
     }
 
-    if (id == 0) { // allow child process to finish without interuptions from main process id != 0
-        sleep(50);
+    if (id) { // sleep if main process
+        sleep(300);
         printInfo();
     }
 

@@ -78,6 +78,19 @@ void mySeek(int fd) {
     myRead(fd, 1);
 }
 
+void creatGapFile(int fd) {
+    myWrite(fd);
+    
+    // printf("Enter gap size: ");
+    long long gapSize = 100000;
+    // scanf("%d", &gapSize);
+
+    long long res = lseek(fd, gapSize, SEEK_CUR);
+    printf("lseek res: %lld\n", res);
+
+    myWrite(fd);
+}
+
 int main(int argc, char *argv[]) {
     // argv[0] - binary name
     // argv[1] - filename
@@ -93,18 +106,11 @@ int main(int argc, char *argv[]) {
     int fd = open(filename, O_CREAT | permissions(mode) | 0666);
     myLog("open", fd, errno, strerror(errno));
 
-    long fileSize = 1024 * 1024 * 1024; // 1GB file
-    int res = fallocate(fd, 0, 0, fileSize); // Function: int posix_fallocate (int fd, off_t offset, off_t length). Zero on success, errno is not set
-    if (res != 1) {
-        perror("Failed to create file without gap zeros with fallocate");
-        exit(1);
-    }
-
     int option = -1;
 
     int go = 1;
     while (go) {
-        printf("Choose number:\n1 - write\n2 - read\n3 - seek\n4 - exit\n");
+        printf("Choose number:\n1 - write\n2 - read\n3 - seek\n4 - creat gap file\n5 - exit\n");
         scanf("%d", &option);
 
         switch (option) {
@@ -120,6 +126,9 @@ int main(int argc, char *argv[]) {
                 mySeek(fd);
                 break;
             case 4:
+                creatGapFile(fd);
+                break;
+            case 5:
                 go = 0;
                 break;
             default:
@@ -133,3 +142,8 @@ int main(int argc, char *argv[]) {
     
     return 0;
 }
+
+// write
+// lseek -> end + 1GB
+// TO DO
+// ask (про количество блоков)

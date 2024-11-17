@@ -10,7 +10,7 @@
 
 int main() {
     
-    int fd = open("foo.txt", O_RDONLY);
+    int fd = open("foo.txt", O_RDONLY); // file does not exist on purpose to tgigger error ret value
 
     printf("fd = %d\n", fd);
 

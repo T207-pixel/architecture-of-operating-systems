@@ -31,10 +31,10 @@ int main() {
     int n;
     if (id == 0) {
         n = 1;
-        printf("Child\n\n");
+        printf("Childs info is above\n\n");
     } else {
         n = 6;
-        printf("Parent\n\n");
+        printf("Parent info is above\n\n");
     }
 
     if (id == 0) { // allow child process to finish without interuptions from main process id != 0
@@ -45,9 +45,16 @@ int main() {
     for (int i = n; i < n + 5; i++) {
         printf("%d ", i);
         sleep(1);
+        if (id == 0) {
+            sleep(100);
+        }
         fflush(stdout);
     }
 
     printf("\n");
     return 0;
 }
+
+// Commands
+// ps -o ppid= -p <PID> - output perents PID
+// ps -o ppid=<PID> - output all perents PIDs

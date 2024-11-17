@@ -28,9 +28,11 @@ int main(int argc, char *argv[]) {
     printf("User ID of the file's owner: %u\n", buf.st_uid);            /* User ID of the file's owner.	*/
     printf("Group ID of the file's group: %u\n", buf.st_gid);           /* Group ID of the file's group.*/
     printf("Device number, if device: %lu\n", buf.st_rdev);             /* Device number, if device.  */
-    printf("Size of file, in bytes: %ld\n", buf.st_size);               /* Size of file, in bytes.  */
+
+    printf("Size of file, in bytes: %ld\n", buf.st_size);               /* Size of file, in bytes.  */ // supose that it outputs logical size of file
     printf("Optimal block size for I/O: %ld\n", buf.st_blksize);        /* Optimal block size for I/O.  */
     printf("Number 512-byte blocks allocated: %ld\n", buf.st_blocks);   /* Number 512-byte blocks allocated. */
+
     printf("Time of last access: %ld\n", buf.st_atime);                 /* Time of last access.  */
     printf("Time of last modification: %ld\n", buf.st_mtime);           /* Time of last modification.  */
     printf("Time of last status change: %ld\n\n\n", buf.st_ctime);      /* Time of last status change.  */

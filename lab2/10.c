@@ -21,6 +21,11 @@ void print_args_and_env(char **args) {
 }
 
 int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("usage: %s 10-1\n", argv[0]);
+        exit(1);
+    }
+    
     // Child process 
     if (fork() == 0) {
         print_args_and_env(argv);

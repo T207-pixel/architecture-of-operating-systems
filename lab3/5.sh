@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gcc 3.c
+gcc 5.c
 ./a.out

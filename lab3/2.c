@@ -12,6 +12,7 @@ void handle_sigint(int sig) {
 int main() {
     struct sigaction sigAct;
 
+    memset(&sigAct, 0, sizeof(sigAct));
     sigAct.sa_handler = handle_sigint;
     sigemptyset(&sigAct.sa_mask); // clear signals mask ensures, that other signals won't be ignored during execution of handler
     sigaction(SIGINT, &sigAct, NULL);

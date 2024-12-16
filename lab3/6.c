@@ -6,7 +6,7 @@
 
 void child() {
     for (int i = 0; i < 100; i++) {
-        printf("loop %d\n", i);
+        printf("iteration number: %d\n", i);
         for (int j = 0; j < 100; j++)
             for (int k = 0; k < 100; k++);
     }
@@ -15,11 +15,11 @@ void child() {
 int main() {
     int childPid = fork();
 
-    if (!childPid) {
+    if (!childPid) { // child process
         child();
     } else {
-        int res;
-        kill(childPid, SIGUSR2);
+        int res; // parent process
+        kill(childPid, SIGILL);
         wait(&res);
         printf("wait res: %d\n", res);
     }

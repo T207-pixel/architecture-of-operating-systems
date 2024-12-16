@@ -1,11 +1,9 @@
 #include<stdio.h> 
 #include<signal.h> 
-  
-// Handler for SIGINT, caused by
-// Ctrl-C at keyboard
-void handle_sigint(int sig) { // ignor SIGINT (2)
+#include <unistd.h>
+
+void handle_sigint(int sig) {
     printf("Caught signal %d\n", sig);
-    signal(sig, SIG_DFL); // is 0
 }
   
 int main()  {

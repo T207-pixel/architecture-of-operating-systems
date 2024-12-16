@@ -12,12 +12,8 @@
 
 void synced(pid_t other_pid) {
     pid_t this_pid = getpid();
-    sigset_t sigset;
     sigset_t  empty_sigset;
-
-    sigaddset(&sigset, SIGUSR1);
     sigemptyset(&empty_sigset);
-    sigprocmask(SIG_BLOCK, &sigset, NULL);
 
     if (this_pid < other_pid) {
         sigsuspend(&empty_sigset);
@@ -25,7 +21,7 @@ void synced(pid_t other_pid) {
 
     while(1) {
         printf("%d\n", this_pid);
-        sleep(2);
+        sleep(1);
         kill(other_pid, SIGUSR1);
         sigsuspend(&empty_sigset);
     }

@@ -33,8 +33,8 @@ int main() {
 
         printf("Child: Waiting for signal...\n"); // Ожидание получения сигнала SIGUSR1
 
-        suspendmask = oldmask; // Установка маски для sigsuspend (разрешаем SIGUSR1)
-        sigdelset(&suspendmask, SIGUSR1);
+        suspendmask = oldmask;
+        sigdelset(&suspendmask, SIGUSR1); // The sigdelset() function deletes the individual signal specified by signo from the signal set pointed to by set.
 
         while (signal_received == 0) { // Приостановка процесса до получения сигнала, разрешенного в suspendmask (то есть только SIGUSR1)
             sigsuspend(&suspendmask);
@@ -53,8 +53,7 @@ int main() {
 
         wait(NULL); // Ожидание завершения дочернего процесса
 
-        // Восстановление исходной маски сигналов
-        sigprocmask(SIG_SETMASK, &oldmask, NULL);
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);  // Восстановление исходной маски сигналов
         printf("Parent: Exiting.\n");
     }
 

@@ -1,58 +1,81 @@
 #define _XOPEN_SOURCE 700
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <fcntl.h>
-#include <string.h>
-#include <signal.h>
-#include <limits.h>
-#include <time.h>
 
+// Глобальная переменная для демонстрации синхронизации
+sig_atomic_t signal_received = 0;
 
-void synced(pid_t other_pid) {
-    pid_t this_pid = getpid();
-    sigset_t sigset;
-    sigset_t e_sigset;
-    sigaddset(&sigset, SIGUSR1);
-    sigemptyset(&e_sigset);
-    sigprocmask(SIG_BLOCK, &sigset, NULL);
-
-    if (this_pid < other_pid) {
-        sigsuspend(&e_sigset);
-    }
-
-    while(1) {
-        printf("%d\n", this_pid);
-        sleep(1);
-        kill(other_pid, SIGUSR1);
-        sigsuspend(&e_sigset);
-    }
-}
-
-void handle_signal(int sig) {
+// Обработчик сигнала
+void signal_handler(int sig) {
     if (sig == SIGUSR1) {
-
-    } else {
-        SIG_DFL;
+        signal_received = 1;
     }
 }
 
-void main() {
+int main() {
+    pid_t pid;
     struct sigaction sa;
+    sigset_t mask, oldmask, suspendmask;
 
-    sa.sa_handler = handle_signal;
-    sa.sa_flags = 0;
+    // Настройка обработчика сигнала SIGUSR1
+    sa.sa_handler = signal_handler;
     sigemptyset(&sa.sa_mask);
-    sigaction(SIGUSR1, &sa, NULL);
+    sa.sa_flags = 0;
 
-    int parent_pid = getpid();
-    int child_pid = fork();
+    sigaction(SIGUSR1, &sa, NULL); 
 
-    if (child_pid == 0) {
-        synced(parent_pid);
-    } else {
-        synced(child_pid);
-    }
+    // Создание новой маски сигналов, блокирующей SIGUSR1
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGUSR1);
+
+    // Блокировка сигнала SIGUSR1
+    sigprocmask(SIG_BLOCK, &mask, &oldmask);
+
+    // Создание дочернего процесса
+    pid = fork();
+
+    if (pid == 0) { // Дочерний процесс
+        printf("Child: PID = %d\n", getpid());
+
+        // Ожидание получения сигнала SIGUSR1
+        printf("Child: Waiting for signal...\n");
+
+        // Установка маски для sigsuspend (разрешаем SIGUSR1)
+        suspendmask = oldmask;
+        sigdelset(&suspendmask, SIGUSR1);
+
+        // Приостановка процесса до получения сигнала, разрешенного в suspendmask
+        while (signal_received == 0) {
+            sigsuspend(&suspendmask);
+        }
+
+        printf("Child: Signal received!\n");
+
+        // Восстановление исходной маски сигналов
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);
         
+        printf("Child: Exiting.\n");
+        exit(0);
+
+    } else { // Родительский процесс
+        printf("Parent: PID = %d, Child PID = %d\n", getpid(), pid);
+
+        // Небольшая задержка, чтобы дочерний процесс успел запустить sigsuspend
+        sleep(1);
+        printf("Parent: Sending signal to child...\n");
+
+        // Отправка сигнала SIGUSR1 дочернему процессу
+        kill(pid, SIGUSR1);
+
+        // Ожидание завершения дочернего процесса
+        wait(NULL);
+
+        // Восстановление исходной маски сигналов
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);
+        printf("Parent: Exiting.\n");
+    }
+
 }

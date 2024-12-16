@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
- #include <sys/wait.h>
+#include <sys/wait.h>
 
 void child() {
     for (int i = 0; i < 100; i++) {

@@ -7,7 +7,7 @@
 #include <signal.h> 
 
 // Uncomment to show behaviour with handling
-// #define withHandler
+#define withHandler
 
 void handle_signal(int sig) {
     if (sig == SIGALRM) {

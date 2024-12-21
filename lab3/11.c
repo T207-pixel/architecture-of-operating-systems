@@ -16,14 +16,14 @@ void synced(pid_t other_pid) {
     sigemptyset(&empty_sigset);
 
     if (this_pid < other_pid) {
-        sigsuspend(&empty_sigset);
+        sigsuspend(&empty_sigset); // suspend for child
     }
 
     while(1) {
         printf("%d\n", this_pid);
         sleep(1);
         kill(other_pid, SIGUSR1);
-        sigsuspend(&empty_sigset);
+        sigsuspend(&empty_sigset); // suspend for parent
     }
 }
 

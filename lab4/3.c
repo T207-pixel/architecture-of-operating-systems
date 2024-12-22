@@ -45,6 +45,7 @@ int main() {
 
         do {
             char buf[80] = {0};
+            sleep(1); // Not to use 100% CPU (may be harmful)
             r = read(fd[0], buf, 80);
             if (r > 0) {
                 printf("Parent: %s", buf);
